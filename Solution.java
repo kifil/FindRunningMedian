@@ -6,81 +6,56 @@ import java.util.regex.*;
 
 public class Solution {
     public static void main(String args[] ) throws Exception {
-        /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+        Scanner in = new Scanner(System.in);
+        Integer numberOfInputs = (int)in.nextInt(); // number of ints
         
-        //priorityqueue == heap orderd binary tree
-        //use a min quueu and a max queue
-        //max queue is left half, min is right half
-        
-        //if queues are equal size
-            //add to either queue and resort 
-       
-        
-        //if queues are not equal
-            //add ot smaller and resort
-            //if add ot max and maxQueue head > minQueue head, swap heads and resort
-        //invert too
-            //now invariat should be left tree always has smaller half of numbers and right tree has larger half
-        
-        //if queues are uneven for a median
-            //median is top node of larger heap
-        //if even
-            //avergae top from each
-        
-        int maxSize =5;
+        //min heap will hold the larger half of the numbers and max heap the smaller half
+        //the median will be the average of the top of both halves or whichever heap is larger
         PriorityQueue<Integer> minHeap = new PriorityQueue<Integer>();
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>(maxSize,Collections.reverseOrder());
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>(numberOfInputs,Collections.reverseOrder());
         
-        Integer num = 2;
-        
-        
-        //apick a heap if same size
+        for(int i = 0; i < numberOfInputs; i++){
+            Integer num = (int)in.nextInt(); //read in input string
+            AddNumberAndPrintMedian(minHeap, maxHeap, num);
+        }
+    }
+    
+    public static void AddNumberAndPrintMedian(PriorityQueue<Integer> minHeap,PriorityQueue<Integer> maxHeap, Integer num){
         if(minHeap.size() == maxHeap.size()){
-            minHeap.add(num);
-            System.out.println((Float)minHeap.peek());
+             minHeap.add(num);
+
+             RebalanceTrees(minHeap,maxHeap);
+            //min heap is larger so the middle number is just the top of it
+             System.out.println((double)minHeap.peek());
         }
         else{
             //add to smaller heap
             if(minHeap.size() < maxHeap.size()){
-                minHeap.add(num); //does this sort? looks like it
-  
+                minHeap.add(num); 
             }
             else{
                 maxHeap.add(num);
             }
+
+
+            RebalanceTrees(minHeap,maxHeap);
             
-            //rebalance if we added to wrong side, minheap (larger half) should always have large number than max heap (smaller half)
-            if(minHeap.peek() < maxHeap.peek()){
-                Integer minHead = minHeap.poll();
-                Integer maxHead = maxHeap.poll();
-                
-                maxHeap.add(minHead);
-                minHeap.add(maxHead);
-                //swap, largest lesthand element bigger than smallest right hand, menaing it should be moved ot the right
-            }
-            
-            Float median = 0.0;
-            median = (minHeap.peek() + maxHeap.peek()) / 2.0
+            //trees are equal size so average the tops
+            double median = (minHeap.peek() + maxHeap.peek()) / 2.0;
             System.out.println(median);
         }
-    //   4  5 added to min, min heap
-      //  7  6
-        
+          
     }
 
-    public void PrintMedian(minHeap,maxHeap){
-        //if min heap greater print that
-        
-        //else sizes are equal since we add to min heap first, average top two and print
+    public static void RebalanceTrees(PriorityQueue<Integer> minHeap,PriorityQueue<Integer> maxHeap){
+        //rebalance if we added to wrong side, minheap (larger half) should always have larger number than max heap (smaller half)
+        if(minHeap.peek() != null && maxHeap.peek() != null &&  minHeap.peek() < maxHeap.peek()){
+            Integer minHead = minHeap.poll();
+            Integer maxHead = maxHeap.poll();
+
+            maxHeap.add(minHead);
+            minHeap.add(maxHead);
+        }
     }                          
     
-    
-    public void AddNumber(minHeap,MaxHeap){
-        //funciton above
-    }
-                               
-    
-    
-    
-
 }
